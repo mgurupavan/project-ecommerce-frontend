@@ -10,20 +10,6 @@ class TotalCart extends Component {
       total: 0
     };
   }
-  // componentDidMount() {
-  //   axios
-  //     .get("/carts", {
-  //       headers: {
-  //         "x-auth": localStorage.getItem("token")
-  //       }
-  //     })
-  //     .then(response => {
-  //       this.setState(() => ({ carts: response.data.cart, cart: true }));
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }
 
   componentWillReceiveProps(nextProps) {
     if (this.state.carts.length !== nextProps.cart.length) {
@@ -32,21 +18,13 @@ class TotalCart extends Component {
   }
 
   render() {
-    // console.log(this.state.carts);
-    // this.setState(() => ({ totalCart: total }))
-    //console.log(this.state.carts);
     let total = 0;
-    for (let i = 0; i < this.state.carts.length; i++) {
-      total +=
-        this.state.carts[i].product.stock * this.state.carts[i].product.price;
+    for (let i = 0; i <= this.state.carts.length - 1; i++) {
+      total += this.state.carts[i].quantity * this.state.carts[i].product.price;
     }
 
-    console.log(this.state.carts, "total cart");
     return (
       <div>
-        {/* {this.state.carts.map(cart => {
-          this.state.total += cart.product.stock * cart.product.price;
-        })} */}
         <p style={{ fontSize: "1.2rem", float: "right" }}>
           Subtotal({this.state.carts.length}items):{total}
         </p>

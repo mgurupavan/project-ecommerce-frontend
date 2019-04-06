@@ -66,7 +66,7 @@ class Cart extends Component {
                             value={cart.quantity}
                             min="1"
                             max="50"
-                            onChange={this.handleQuentity}
+                            onChange={this.handleQuantity}
                             style={{ float: "right" }}
                           />
                         </label>

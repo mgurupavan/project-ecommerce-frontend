@@ -15,9 +15,8 @@ import Logout from "./comoponents/users/Logout";
 import Home from "./comoponents/Home/Home";
 import Notfound from "./comoponents/Home/NotFound";
 import Cart from "./comoponents/Cart/Carts";
-import MonthlyCart from './comoponents/MonthlyCart/MonthlyCart'
+import MonthlyCart from "./comoponents/MonthlyCart/MonthlyCart";
 // import { AppBar, Toolbar, Typography } from "@material-ui/core";
-
 
 import "./App.css";
 
@@ -37,8 +36,8 @@ class App extends Component {
           <Link to="/user/register">Register</Link> |{" "}
           <Link to="/user/login">Login</Link> |{" "}
           <Link to="/user/logout">Logout</Link> |{" "}
-          <Link to="/user/cart">cart</Link>
-          <Link to = '/user/monthlycart'> </Link>
+          <Link to="/user/cart">cart</Link> | {"  "}
+          <Link to="/user/monthlycart">MonthlyCart </Link>
           <Switch>
             <Route path="/categories" component={Categories} exact={true} />
             <Route path="/categories/add" component={NewCategory} />
@@ -57,6 +56,7 @@ class App extends Component {
             <Route path="/user/logout" component={Logout} />
             <Route path="/user/cart" component={Cart} />
             <Route path="/home" component={Home} />
+            <Route path="/user/monthlycart" component={MonthlyCart} />
             <Route component={Notfound} />
           </Switch>
         </div>

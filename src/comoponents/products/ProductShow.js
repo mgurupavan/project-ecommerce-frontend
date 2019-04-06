@@ -6,16 +6,16 @@ class ProductShow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: {},
+      product: {},
       isLoaded: false
     };
   }
   componentDidMount() {
     const id = this.props.match.params.id;
     axios.get(`/products/${id}`).then(response => {
-      const products = response.data;
+      const product = response.data;
 
-      this.setState(() => ({ products: products, isLoaded: true }));
+      this.setState(() => ({ product, isLoaded: true }));
     });
   }
   handleDelete = () => {
@@ -38,7 +38,7 @@ class ProductShow extends Component {
   };
   handleCart = () => {
     const data = {
-      product: this.props.match.params.id,
+      product: this.state.product._id,
       quantity: 1
     };
     axios
@@ -54,22 +54,50 @@ class ProductShow extends Component {
         console.log(err);
       });
   };
+  handleMonthlyCart = () => {
+    const data = {
+      product: this.state.product._id,
+      quantity: 1
+    };
+    axios
+      .post("/monthlycarts", data, {
+        headers: {
+          "x-auth": localStorage.getItem("token")
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   render() {
+    // console.log(this.state.product);
     return (
       <div>
         {this.state.isLoaded && (
           <div>
             <div>
-              <h5>{this.state.products.name}</h5>
+              <h5>{this.state.product.name}</h5>
               <img
-                src={this.state.products.imageUrl}
+                src={this.state.product.imageUrl}
                 alt="productImg"
                 width="100"
                 hight="100"
               />
-              <p>description:{this.state.products.description}</p>
-              <p>price -{this.state.products.price}</p>
+              <p>description:{this.state.product.description}</p>
+              <p>price -{this.state.product.price}</p>
               <button onClick={this.handleCart}>AddCart</button>
+              <button onClick={this.handleMonthlyCart}>
+                {" "}
+                Add to Monthly Cart
+              </button>
+              <span>
+                {" "}
+                if you want to place products automatically for every month then
+                please add it to monthly cart
+              </span>
             </div>
             <hr />
             <Link to={`/product/edit/${this.props.match.params.id}`}>Edit</Link>

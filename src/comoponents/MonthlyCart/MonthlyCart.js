@@ -5,7 +5,7 @@ class MonthlyCart extends Component {
   constructor() {
     super();
     this.state = {
-      monthlycart: [],
+      monthlycarts: [],
       onload: false,
       quaninty: 1,
       totalCart: 0
@@ -20,7 +20,7 @@ class MonthlyCart extends Component {
       })
       .then(response => {
         this.setState(() => ({
-          monthlycart: response.data.monthlycart,
+          monthlycarts: response.data.monthlyCart,
           onload: true
         }));
         //console.log(carts);
@@ -29,24 +29,22 @@ class MonthlyCart extends Component {
         console.log(err);
       });
   }
-  handleQuentity = e => {};
-
-  handleDelete = () => {};
-
+  handleQuentity = () => {};
   render() {
-    //console.log("guru");
-    //  console.log(this.state.carts);
+    //console.log(this.state.monthlycarts);
+
     if (localStorage.getItem("token")) {
-      if (this.state.carts[0]) {
+      if (this.state.monthlycarts[0]) {
         return (
           <div>
             {/* {console.log(this.state.carts)} */}
-            {console.log(this.state.carts, 1)}
-            <h4>Shopping Cart-{this.state.carts.length}</h4>
+            {/* {console.log(this.state.carts, 1)} */}
 
-            {this.state.cart && (
+            <h4>Shopping Cart-{this.state.monthlycarts.length}</h4>
+
+            {this.state.monthlycarts && (
               <div>
-                {this.state.carts.map(cart => {
+                {this.state.monthlycarts.map(cart => {
                   return (
                     <div key={cart._id}>
                       <hr />
@@ -88,17 +86,17 @@ class MonthlyCart extends Component {
                         style={{ textDecoration: "underline", color: "red" }}
                         onClick={() => {
                           axios
-                            .delete(`carts/${cart._id}`, {
+                            .delete(`monthlycarts/${cart._id}`, {
                               headers: {
                                 "x-auth": localStorage.getItem("token")
                               }
                             })
                             .then(response => {
-                              let updatedCart = this.state.carts.filter(
+                              let updatedCart = this.state.monthlycarts.filter(
                                 ucart => ucart._id !== cart._id
                               );
 
-                              this.setState({ carts: updatedCart });
+                              this.setState({ monthlycarts: updatedCart });
                             })
                             .catch(err => {
                               console.log(err);
@@ -118,7 +116,7 @@ class MonthlyCart extends Component {
       } else {
         return (
           <div>
-            <h2>no products in the cart to display</h2>
+            <h2>no products in the monthlycart to display</h2>
           </div>
         );
       }
