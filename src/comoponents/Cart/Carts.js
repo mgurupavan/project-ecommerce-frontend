@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import axios from "../../config/config";
 import { Link } from "react-router-dom";
 import TotalCart from "./TotalCart";
+
 class Cart extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       carts: [],
       cart: false,
-      quaninty: 1,
-      totalCart: 0
+      quantity: Number,
+      cartId: ""
     };
   }
   componentDidMount() {
@@ -20,50 +21,73 @@ class Cart extends Component {
         }
       })
       .then(response => {
+        console.log(response.data.cart);
         this.setState(() => ({ carts: response.data.cart, cart: true }));
-        //console.log(carts);
       })
       .catch(err => {
         console.log(err);
       });
   }
-  handleQuantity = e => {};
+  handleQuantity = e => {
+    e.persist();
+    // console.log(e.target.value);
+    const id = e.target.id;
+    this.setState(() => ({ quantity: e.target.value, cartId: id }));
+  };
+  handleSubmit = e => {
+    e.preventDefault();
+    const id = this.state.cartId;
+    const data = {
+      quantity: this.state.quantity
+    };
 
-  handleDelete = () => {};
+    axios
+      .put(`carts/${id}`, data, {
+        headers: {
+          "x-auth": localStorage.getItem("token")
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    //this.props.handleSubmit(data);
+  };
 
   render() {
-    //console.log("guru");
-    //  console.log(this.state.carts);
+    console.log(this.state.carts);
     if (localStorage.getItem("token")) {
       if (this.state.carts[0]) {
         return (
           <div>
-            {/* {console.log(this.state.carts)} */}
-            <TotalCart cart={this.state.carts} />
-            {/* {console.log(this.state.carts, 1)} */}
-            <h4>Shopping Cart-{this.state.carts.length}</h4>
-
+            <h4>
+              Shopping Cart-{this.state.carts.length}
+              <span
+                style={{
+                  float: "right",
+                  fontSize: "15px",
+                  fontWeight: "normal"
+                }}
+              >
+                Quantity
+              </span>
+            </h4>
             {this.state.cart && (
               <div>
                 {this.state.carts.map(cart => {
                   return (
                     <div key={cart._id}>
                       <hr />
-                      <form type={this.handleSubmit}>
-                        <span
-                          style={{
-                            float: "left",
-                            fontSize: "15px",
-                            fontWeight: "normal"
-                          }}
-                        >
-                          Quantity
-                        </span>
+                      <form onSubmit={this.handleSubmit}>
                         <label>
                           <input
                             type="number"
                             name="quantity"
-                            value={cart.quantity}
+                            // value={cart.quantity}
+                            id={cart._id}
+                            defaultValue={cart.quantity}
                             min="1"
                             max="50"
                             onChange={this.handleQuantity}
@@ -83,8 +107,16 @@ class Cart extends Component {
                         hight="100"
                       />
                       <p>price -{cart.product.price}</p>
-                      <button
-                        style={{ textDecoration: "underline", color: "red" }}
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                      <a
+                        // eslint-disable-next-line no-script-url
+                        href="javascript:void(0)"
+                        target="_self"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: "underline",
+                          color: "red"
+                        }}
                         onClick={() => {
                           axios
                             .delete(`carts/${cart._id}`, {
@@ -93,11 +125,12 @@ class Cart extends Component {
                               }
                             })
                             .then(response => {
-                              let updatedCart = this.state.carts.filter(
-                                ucart => ucart._id !== cart._id
+                              let updateCart = this.state.carts.filter(
+                                cartId => cartId._id !== cart._id
                               );
-
-                              this.setState({ carts: updatedCart });
+                              this.setState(() => ({
+                                carts: updateCart
+                              }));
                             })
                             .catch(err => {
                               console.log(err);
@@ -105,24 +138,24 @@ class Cart extends Component {
                         }}
                       >
                         Delete
-                      </button>
+                      </a>
                       <hr />
                     </div>
                   );
                 })}
               </div>
             )}
+            <TotalCart carts={this.state.carts} />
+            <div>
+              <button>Proceed to By</button>
+            </div>
           </div>
         );
       } else {
-        return (
-          <div>
-            <h2>no products in the cart to display</h2>
-          </div>
-        );
+        return <h2>please add products to Cart</h2>;
       }
     } else {
-      return <div> please login to get the cart value</div>;
+      return <h2>please login to show the cart</h2>;
     }
   }
 }

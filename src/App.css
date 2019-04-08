@@ -1,49 +1,68 @@
-/* .App {
-	text-align: center;
+#navBar {
+  background-color: #232f3e;
+
+  opacity: 0.9;
+  height: 100px;
+  color: white;
 }
 
-.App-logo {
-	animation: App-logo-spin infinite 20s linear;
-	height: 40vmin;
-	pointer-events: none;
+#topHalf {
+  height: 50px;
 }
-
-.App-header {
-	background-color: #282c34;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	font-size: calc(10px + 2vmin);
-	color: white;
+#bottomHalf {
+  height: 50px;
 }
-
-.App-link {
-	color: #61dafb;
+#logo {
+  height: 100px;
+  position: absolute;
+  top: -40px;
 }
-
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-} */
-
-/* <style type="text/css">
-
-input:required:invalid,
-input:focus:invalid {
-	background-image: url(https://www.the-art-of-web.com/images/invalid.png);
-	background-position: right top;
-	background-repeat: no-repeat;
+#logoWrapper {
+  margin-bottom: 20px;
+  display: inline-block;
+  position: relative;
+  width: 150px;
 }
-input:required:valid {
-	background-image: url(https://www.the-art-of-web.com/images/valid.png);
-	background-position: right top;
-	background-repeat: no-repeat;
+#backToSchool {
+  height: 50px;
+  float: right;
+  margin-right: 20px;
 }
+#in {
+  /* vertical-align: top; */
+  margin-top: 20px;
+  margin-left: 14rem;
+  border-radius: 5px;
+  height: 30px;
+  width: 500px;
 
-</style> */
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+#department {
+  font-size: 25px;
+  padding: 10px;
+  margin-left: 30px;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 10px;
+}
+#sections {
+  display: inline-block;
+  margin-left: 5rem;
+}
+.section {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 15px;
+  margin-top: 25px;
+  margin-left: 20px;
+}
+#accountStuff {
+  display: inline-block;
+  float: right;
+  margin-right: 20px;
+}

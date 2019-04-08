@@ -5,16 +5,19 @@ class TotalCart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      carts: props.cart,
+      carts: props.carts,
       totalCart: 0,
       total: 0
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.carts.length !== nextProps.cart.length) {
-      this.setState(() => ({ carts: nextProps.cart }));
+    if (this.state.carts.length !== nextProps.carts.length) {
+      this.setState(() => ({ carts: nextProps.carts }));
     }
+    // if (this.state.carts === nextProps.carts) {
+    //   console.log("updated");
+    // }
   }
 
   render() {
