@@ -12,15 +12,17 @@ class TotalCart extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.carts.length !== nextProps.carts.length) {
-      this.setState(() => ({ carts: nextProps.carts }));
-    }
+    // if (this.state.carts.length !== nextProps.carts.length) {
+    //   this.setState(() => ({ carts: nextProps.carts }));
+    // }
     // if (this.state.carts === nextProps.carts) {
-    //   console.log("updated");
+    //   this.setState(() => ({ carts: nextProps.carts }));
+    //   console.log("update");
     // }
   }
 
   render() {
+    // console.log(this.state.carts);
     let total = 0;
     for (let i = 0; i <= this.state.carts.length - 1; i++) {
       total += this.state.carts[i].quantity * this.state.carts[i].product.price;

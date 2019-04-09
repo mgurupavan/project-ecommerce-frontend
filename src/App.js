@@ -171,7 +171,8 @@ class App extends Component {
             <Route path="/user/logout" component={Logout} />
             <Route path="/user/cart" component={Carts} />
             <Route path="/user/monthlycart" component={MonthlyCart} />
-            <Route path="/home" component={Home} />
+            <Route path="/home" component={Home} exact={true} />
+            <Route path="/" component={Home} exact={true} />
             <Route component={Notfound} />
           </Switch>
         </div>

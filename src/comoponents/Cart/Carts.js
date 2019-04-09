@@ -21,7 +21,7 @@ class Cart extends Component {
         }
       })
       .then(response => {
-        console.log(response.data.cart);
+        // console.log(response.data.cart);
         this.setState(() => ({ carts: response.data.cart, cart: true }));
       })
       .catch(err => {
@@ -32,32 +32,61 @@ class Cart extends Component {
     e.persist();
     // console.log(e.target.value);
     const id = e.target.id;
-    this.setState(() => ({ quantity: e.target.value, cartId: id }));
-  };
-  handleSubmit = e => {
-    e.preventDefault();
-    const id = this.state.cartId;
+    console.log(e.target.value);
+
     const data = {
       quantity: this.state.quantity
     };
-
-    axios
-      .put(`carts/${id}`, data, {
+    //let id = this.state.cartId;
+    Promise.all([
+      this.setState(() => ({ quantity: e.target.value, cartId: id })),
+      axios.put(`carts/${id}`, data, {
         headers: {
           "x-auth": localStorage.getItem("token")
         }
       })
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    ]).then(response => {
+      console.log(response);
+    });
+
+    // console.log(this.state);
+    // axios
+    //   .put(`carts/${id}`, data, {
+    //     headers: {
+    //       "x-auth": localStorage.getItem("token")
+    //     }
+    //   })
+    //   .then(response => {
+    //     // console.log(response.data);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  };
+  handleSubmit = e => {
+    e.preventDefault();
+    // const id = this.state.cartId;
+    // const data = {
+    //   quantity: this.state.quantity
+    // };
+
+    // axios
+    //   .put(`carts/${id}`, data, {
+    //     headers: {
+    //       "x-auth": localStorage.getItem("token")
+    //     }
+    //   })
+    //   .then(response => {
+    //     console.log(response.data);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
     //this.props.handleSubmit(data);
   };
 
   render() {
-    console.log(this.state.carts);
+    console.log(this.state.quantity);
     if (localStorage.getItem("token")) {
       if (this.state.carts[0]) {
         return (
