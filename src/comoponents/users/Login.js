@@ -121,7 +121,7 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default Login;  
 
 // import React from "react";
 // import { withFormik, Form, Field } from "formik";
@@ -169,7 +169,7 @@ export default Login;
 
 //         resetForm({
 //           email: "",
-//           password: " "
+//           password: "---"
 //         });
 //       })
 //       .catch(err => {
