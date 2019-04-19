@@ -16,7 +16,7 @@ class TotalCart extends Component {
     //   this.setState(() => ({ carts: nextProps.carts }));
     // }
     // if (this.state.carts === nextProps.carts) {
-    //   this.setState(() => ({ carts: nextProps.carts }));
+    //   this.setState(() => ({ carts: nextProps.carts }))
     // }
   }
 
