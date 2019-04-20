@@ -1,201 +1,276 @@
 import React from "react";
-import { withFormik, Form, Field } from "formik";
-import * as Yup from "yup";
 import axios from "../../config/config";
+import PropTypes from "prop-types";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import withStyles from "@material-ui/core/styles/withStyles";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
+import { Link } from "react-router-dom";
 
-const RegisterPage = ({ values, errors, touched, props }) => (
-  <Form>
-    <div>
-      {touched.username && errors.username && <p>{errors.username}</p>}
-      <Field type="text" name="username" placeholder="username" />
-    </div>
-
-    <div>
-      {touched.email && errors.email && <p>{errors.email}</p>}
-      <Field type="email" name="email" placeholder="email" />
-    </div>
-    <div>
-      {touched.password && errors.password && <p>{errors.password}</p>}
-      <Field type="password" name="password" placeholder="password" />
-    </div>
-    <div>
-      {touched.confirm && errors.confirm && <p>{errors.confirm}</p>}
-      <Field type="password" name="confirm" placeholder="confirm" />
-    </div>
-
-    <button>Submit</button>
-  </Form>
-);
-
-const Register = withFormik({
-  mapPropsToValues({ username, confirm, email, password }) {
-    return {
-      username: username || "",
-      email: email || "",
-      password: password || "",
-      confirm: confirm || ""
-    };
+const styles = theme => ({
+  main: {
+    width: "auto",
+    display: "block",
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
   },
-  validationSchema: Yup.object().shape({
-    username: Yup.string()
-      .min(3, "Minimum 3 characters")
-      .required("minimum char length is 3"),
-    email: Yup.string()
-      .email("Provide Valid Email")
-      .required("Provide Email"),
-    password: Yup.string()
-      .min(8, "Password must be 8 characters")
-      .required("Provide password"),
-    confirm: Yup.string()
-      .required("Re-Enter Password")
-      .test("passwords-match", "Passwords is not Match", function(value) {
-        return this.parent.password === value;
-      })
-    //     mobile: Yup.string()
-    //       .matches(/(^([9,8,7]{1})([0123456789]{1})([0-9]{8})$)/, "Invalid Number")
-    //       .min(10, "Provide Mobile Number")
-    //       .required("Provide Mobile Number")
-  }),
-  handleSubmit(values, { resetForm }) {
-    axios
-      .post("/users/register", values)
-      .then(response => {
-        console.log(response);
-        resetForm({
-          username: "",
-          email: "",
-          password: "",
-          confirm: ""
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
   }
-})(RegisterPage);
+});
+class Register extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      //same properties have to be here when i create in mongoose
+      username: "",
+      email: "",
+      password: "",
+      conformPwd: "",
+      emailError: "",
+      nameError: "",
+      nError: false,
+      eError: false,
+      passwordError: "",
+      pError: false,
+      showPassword: false,
+      signupError: ""
+    };
+  }
+  usernameHandle = e => {
+    const username = e.target.value;
+    this.setState(() => ({ username }));
+  };
+  emailHandle = e => {
+    const email = e.target.value;
+    this.setState(() => ({ email }));
+  };
+  passwordHandle(e) {
+    const password = e.target.value;
+    this.setState(() => ({ password }));
+  }
+  conformHandle = () => {};
+  handleClickShowPassword = () => {
+    this.setState(state => ({ showPassword: !this.state.showPassword }));
+  };
+  handleSubmit = e => {
+    e.preventDefault();
 
-export default Register;
+    const formData = {
+      username: this.state.username,
+      email: this.state.email,
+      password: this.state.password
+    };
+    const emailReg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b/.test(
+      this.state.email
+    );
+    const passwordReg = /(?=^.{8,15}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/.test(
+      this.state.password
+    );
+    const usernameReg = /^([a-zA-Z]+)[0-9]*\.*[a-zA-Z0-9]+$|^[a-zA-Z]+[0-9]*$/.test(
+      this.state.username
+    );
+    if (!usernameReg && !emailReg && !passwordReg) {
+      this.setState(() => ({
+        nameError: "Write Your Name > 3 Chracters",
+        nError: true,
+        emailError: "Write Your Valid Email Format",
+        eError: true,
+        passwordError:
+          "Must be alphanumeric with at least one number, one letter, one special Character and be between 8-15 character in length.",
+        pError: true
+      }));
+    } else if (!usernameReg) {
+      this.setState(() => ({
+        nameError: "Write Your Name > 3 Chracters",
+        nError: true
+      }));
+    } else if (!emailReg) {
+      this.setState(() => ({
+        nameError: "",
+        nError: false,
+        emailError: "Write Your Valid Email Format",
+        eError: true
+      }));
+    } else if (!passwordReg) {
+      this.setState(() => ({
+        nameError: "",
+        nError: false,
+        emailError: "",
+        eError: false,
+        passwordError:
+          "Must be alphanumeric with at least one number, one letter, one special Character and be between 8-15 character in length.",
+        pError: true
+      }));
+    } else {
+      this.setState(() => ({
+        nameError: "",
+        nError: false,
+        emailError: "",
+        eError: false,
+        passwordError: "",
+        pError: false
+      }));
+      axios
+        .post("/users/register", formData)
+        .then(response => {
+          const valid = response.data.name;
+          if (valid === "MongoError") {
+            this.setState(() => ({ signupError: "User alerady registerd" }));
+          } else if (valid === "ValidationError") {
+            this.setState(() => ({
+              signupError: "Please Write Your Details In Proper Format"
+            }));
+          } else {
+            this.props.history.push("/user/login");
+            this.setState(() => ({ signupError: "" }));
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
 
-// import React from "react";
-// import axios from "../../config/config";
+  render() {
+    const { classes } = this.props;
 
-// class Register extends React.Component {
-// 	constructor() {
-// 		super();
-// 		this.state = {
-// 			//same properties have to be here when i create in mongoose
-// 			username: "",
-// 			email: "",
-// 			password: "",
-// 			conformPwd: ""
-// 		};
-// 	}
-// 	usernameHandle = e => {
-// 		const username = e.target.value;
-// 		this.setState(() => ({ username }));
-// 	};
-// 	emailHandle = e => {
-// 		const email = e.target.value;
-// 		this.setState(() => ({ email }));
-// 	};
-// 	passwordHandle(e) {
-// 		const password = e.target.value;
-// 		this.setState(() => ({ password }));
-// 	}
-// 	conformHandle = () => {};
-// 	handleSubmit = e => {
-// 		e.preventDefault();
+    return (
+      <div>
+        <main className={classes.main}>
+          <CssBaseline />
+          <Paper className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <AccountCircleIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Register with us
+            </Typography>
 
-// 		const formData = {
-// 			username: this.state.username,
-// 			email: this.state.email,
-// 			password: this.state.password
-// 		};
-// 		//valdition
+            <form className={classes.form}>
+              <span style={{ color: "red" }}>{this.state.signupError}</span>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="username">User Name</InputLabel>
+                <Input
+                  type="text"
+                  name="username"
+                  value={this.state.username}
+                  onChange={this.usernameHandle}
+                  placeholder="Write Your Username"
+                  required
+                  error={this.state.nError}
+                />
+                <span style={{ color: "red" }}>{this.state.nameError}</span>
+              </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="email">Email Address</InputLabel>
+                <Input
+                  type="text"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.emailHandle}
+                  required
+                  placeholder="Write Your Valid Email"
+                  error={this.state.eError}
+                />
+                <span style={{ color: "red" }}>{this.state.emailError}</span>
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <Input
+                    type={this.state.showPassword ? "text" : "password"}
+                    name="password"
+                    value={this.state.password}
+                    onChange={this.passwordHandle.bind(this)}
+                    required
+                    placeholder="Write Your Password"
+                    error={this.state.pError}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={this.handleClickShowPassword}
+                        >
+                          {this.state.showPassword ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  <span style={{ color: "red" }}>
+                    {this.state.passwordError}
+                  </span>
+                </FormControl>
+              </FormControl>
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                size="small"
+                className={classes.submit}
+                onClick={this.handleSubmit}
+              >
+                Sign up
+              </Button>
+            </form>
+          </Paper>
+        </main>
+        <center>
+          <Typography>OR</Typography>
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            className={classes.button}
+          >
+            <Link
+              to="/user/login"
+              style={{ color: "#F50057", textDecoration: "none" }}
+            >
+              LogIn
+            </Link>
+          </Button>
+        </center>
+      </div>
+    );
+  }
+}
+Register.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
-// 		axios
-// 			.post("/users/register", formData)
-// 			.then(responce => {
-// 				this.setState(() => ({
-// 					username: "",
-// 					email: "",
-// 					password: ""
-// 				}));
-// 				this.props.history.push("/user/login");
-// 			})
-// 			.catch(err => {
-// 				console.log(err);
-// 			});
-// 	};
-
-// 	render() {
-// 		return (
-// 			<div>
-// 				<h3>Register with us</h3>
-// 				<form onSubmit={this.handleSubmit}>
-// 					<label>
-// 						UserName:
-// 						<input
-// 							type="text"
-// 							name="username"
-// 							value={this.state.username}
-// 							onChange={this.usernameHandle}
-// 							minLength="3"
-// 							maxLength="10"
-// 							required="write your name"
-// 							autoFocus
-// 							pattern="\w*"
-// 							title="must be alphanumeric"
-// 							placeholder="write your username"
-// 						/>
-// 					</label>
-// 					<br />
-// 					<label>
-// 						Email:
-// 						<input
-// 							type="text"
-// 							name="email"
-// 							value={this.state.email}
-// 							onChange={this.emailHandle}
-// 							required
-// 							// pattern={`^((?>[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+\x20*|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*"\x20*)*(?<angle><))?((?!\.)(?>\.?[a-zA-Z\d!#$%&'*+\-/=?^_`{|}~]+)+|"((?=[\x01-\x7f])[^"\\]|\\[\x01-\x7f])*")@(((?!-)[a-zA-Z\d\-]+(?<!-)\.)+[a-zA-Z]{2,}|\[(((?(?<!\[)\.)(25[0-5]|2[0-4]\d|[01]?\d?\d)){4}|[a-zA-Z\d\-]*[a-zA-Z\d]:((?=[\x01-\x7f])[^\\\[\]]|\\[\x01-\x7f])+)\])(?(angle)>)$ `}
-// 							pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-// 							title="example@example.com"
-// 							placeholder="write your valid email"
-// 						/>
-// 					</label>
-// 					<br />
-// 					<label>
-// 						Password:
-// 						<input
-// 							type="password"
-// 							name="password"
-// 							value={this.state.password}
-// 							onChange={this.passwordHandle.bind(this)}
-// 							required
-// 							pattern="(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{6,15})$"
-// 							title="must be alphanumeric with at least one number, one letter, and be between 6-15 character in length."
-// 							placeholder="write your password"
-// 						/>
-// 					</label>
-// 					<br />
-// 					PasswordConform:
-// 					<label>
-// 						<input
-// 							type="password"
-// 							name="password"
-// 							value={this.state.conformPwd}
-// 							onChange={this.conformHandle}
-// 							required
-// 							placeholder="conform your password"
-// 						/>
-// 					</label>
-// 					<br />
-// 					<input type="submit" onChange={this.handleSubmit} />
-// 				</form>
-// 			</div>
-// 		);
-// 	}
-// }
-
-// export default Register;
+export default withStyles(styles)(Register);

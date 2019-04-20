@@ -1,181 +1,230 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import withStyles from "@material-ui/core/styles/withStyles";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import IconButton from "@material-ui/core/IconButton";
 import axios from "../../config/config";
-// import { Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
+const styles = theme => ({
+  main: {
+    width: "auto",
+    display: "block",
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: "auto",
+      marginRight: "auto"
+    }
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
+});
+
 class Login extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: "",
       password: "",
-      redirectCategories: false,
+      showPassword: false,
+      loginError: "",
       emailError: "",
-      passwordError: ""
+      passwordError: "",
+      error: false,
+      perror: false
     };
-    //this.passwordHandle.bind(this);
   }
   emailHandle = e => {
     const email = e.target.value;
+
     this.setState(() => ({ email }));
   };
   passwordHandle = e => {
     e.persist(); //when ever u read diractely in setState use event.persist() must
     this.setState(() => ({ password: e.target.value }));
   };
-
-  //valdition
-  validate = () => {
-    let isError = false;
-    const errors = {
-      emailError: "",
-      passwordError: ""
-    };
-
-    if (this.state.email.indexOf("@") === -1) {
-      isError = true;
-      errors.emailError = "please provide valid email id";
-    }
-    if (!this.state.password) {
-      isError = true;
-      errors.passwordError = "please enter password";
-    }
-
-    this.setState({
-      ...this.state,
-      ...errors
-    });
-    return isError;
+  handleClickShowPassword = () => {
+    this.setState(state => ({ showPassword: !this.state.showPassword }));
   };
-
   handleSubmit = e => {
     e.preventDefault();
-    const err = this.validate();
 
-    if (!err) {
-      const formData = {
-        email: this.state.email,
-        password: this.state.password,
-        redirectCategories: false
-      };
+    const formData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+    if (this.state.email === "" && this.state.password === "") {
+      this.setState(() => ({
+        emailError: "give valid email format",
+        error: true,
+        passwordError: "please type the password",
+        perror: true
+      }));
+    } else if (
+      this.state.email.indexOf("@") === -1 ||
+      this.state.email.indexOf(".") === -1 ||
+      this.state.email === ""
+    ) {
+      this.setState(() => ({
+        emailError: "give valid email format",
+        error: true
+      }));
+    } else if (this.state.password === "") {
+      this.setState(() => ({
+        emailError: "",
+        error: false,
+        passwordError: "please type the password",
+        perror: true
+      }));
+    } else {
+      this.setState(() => ({
+        emailError: "",
+        passwordError: "",
+        error: false,
+        perror: false
+      }));
       axios
         .post("/users/login", formData)
         .then(response => {
-          console.log(response.data);
-          if (response.data.length > 30) {
-            localStorage.setItem("token", response.data);
+          const token = response.data;
+          this.setState(() => ({ loginError: token }));
+          if (token !== "invalid email or password") {
+            this.setState(() => ({ loginError: "" }));
+            localStorage.setItem("token", token);
+            this.props.history.push("/home");
+            this.props.handleLogin();
           }
-          this.setState({
-            email: "",
-            password: "",
-            emailError: "",
-            passwordError: ""
-          });
         })
         .catch(err => {
           console.log(err);
         });
     }
   };
+
   render() {
-    // console.log(this.state);
-    if (this.state.redirectCategories) {
-      // return <Redirect to="/categories" />;
-    }
+    const { classes } = this.props;
     return (
       <div>
-        <h3>Login</h3>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Email:
-            <input
-              type="text"
-              name="email"
-              value={this.state.email}
-              onChange={this.emailHandle}
-              // required
-              autoFocus
-              placeholder="write your name"
-              // pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-              title="example@example.com"
-            />
-          </label>
-          <p>{this.state.emailError}</p>
-          <br />
-          <label>
-            Password:
-            <input
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.passwordHandle}
-              //required
-              placeholder="write your password"
-            />
-          </label>
-          <p>{this.state.passwordError}</p>
-          <br />
+        <main className={classes.main}>
+          <CssBaseline />
+          <Paper className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
 
-          <input type="submit" onSubmit={this.handleSubmit} />
-        </form>
+            <form className={classes.form}>
+              <span style={{ color: "red" }}>{this.state.loginError}</span>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="email">Email Address</InputLabel>
+                <Input
+                  type="text"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.emailHandle}
+                  placeholder="Your Email"
+                  required
+                  error={this.state.error}
+                />
+                <span style={{ color: "red" }}>{this.state.emailError}</span>
+              </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="password">Password</InputLabel>
+                <Input
+                  type={this.state.showPassword ? "text" : "password"}
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.passwordHandle}
+                  placeholder="Your Password"
+                  required
+                  error={this.state.perror}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={this.handleClickShowPassword}
+                      >
+                        {this.state.showPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                <span style={{ color: "red" }}>{this.state.passwordError}</span>
+              </FormControl>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                size="small"
+                className={classes.submit}
+                onClick={this.handleSubmit}
+              >
+                Sign in
+              </Button>
+            </form>
+          </Paper>
+        </main>
+
+        <center>
+          <Typography>OR</Typography>
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            className={classes.button}
+          >
+            <Link
+              to="/user/register"
+              style={{ color: "#F50057", textDecoration: "none" }}
+            >
+              Create Your Account with us
+            </Link>
+          </Button>
+        </center>
       </div>
     );
   }
 }
 
-export default Login;  
+Login.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
-// import React from "react";
-// import { withFormik, Form, Field } from "formik";
-// import * as Yup from "yup";
-// import axios from "../../config/config";
-
-// const LoginPage = ({ values, errors, touched }) => (
-//   <Form>
-//     <div>
-//       {touched.email && errors.email && <p>{errors.email}</p>}
-//       <Field type="email" name="email" placeholder="email" />
-//     </div>
-//     <div>
-//       {touched.password && errors.password && <p>{errors.password}</p>}
-//       <Field type="password" name="password" placeholder="password" />
-//     </div>
-
-//     <button>Submit</button>
-//   </Form>
-// );
-
-// const Login = withFormik({
-//   mapPropsToValues({ email, password }) {
-//     return {
-//       email: email || "",
-//       password: password || ""
-//     };
-//   },
-//   validationSchema: Yup.object().shape({
-//     email: Yup.string()
-//       .email("Please provide Valid Email")
-//       .required("Please provide Email"),
-//     password: Yup.string()
-//       .min(8, "Password must be 8 characters")
-//       .required("Please provide password")
-//   }),
-//   handleSubmit(values, { resetForm }) {
-//     axios
-//       .post("/users/login", values)
-//       .then(response => {
-//         console.log(response.data);
-//         if (response.data.length > 20) {
-//           localStorage.setItem("token", response.data);
-//         }
-
-//         resetForm({
-//           email: "",
-//           password: "---"
-//         });
-//       })
-//       .catch(err => {
-//         console.log(err);
-//       });
-//   }
-// })(LoginPage);
-
-// export default Login;
+export default withStyles(styles)(Login);

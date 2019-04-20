@@ -9,14 +9,13 @@ const Logout = props => {
       }
     })
     .then(responce => {
-      return {
-        statusText: "you have successfully logged out",
-        localStorage: localStorage.setItem("token", [])
-      };
+      localStorage.removeItem("token");
+      props.handleLogout();
     })
     .catch(err => {
-      return { statusText: "something went wrong" };
+      return "somthing went worng";
     });
+  props.history.push("/user/Login/");
   return <div />;
 };
 

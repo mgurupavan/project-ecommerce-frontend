@@ -12,7 +12,7 @@ class AddAddress extends Component {
         }
       })
       .then(responce => {
-        this.props.history.push("/user/addresses");
+        //this.props.history.push("/user/addresses");
       })
       .catch(err => {
         console.log(err);

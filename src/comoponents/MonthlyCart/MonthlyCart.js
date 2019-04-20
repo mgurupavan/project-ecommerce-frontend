@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import axios from "../../config/config";
 import { Link } from "react-router-dom";
-class MonthlyCart extends Component {
-  constructor() {
-    super();
+import MonthlyTotalCart from "./MonthlyTotalCart";
+import MonthlyQuantity from "./MonthlyQuantity";
+class MonthlyCarts extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      monthlycarts: [],
-      onload: false,
-      quaninty: 1,
-      totalCart: 0
+      carts: [],
+      cart: false
     };
   }
   componentDidMount() {
@@ -19,111 +19,131 @@ class MonthlyCart extends Component {
         }
       })
       .then(response => {
+        console.log(response.data);
         this.setState(() => ({
-          monthlycarts: response.data.monthlyCart,
-          onload: true
+          carts: response.data.monthlyCart,
+          cart: true
         }));
-        //console.log(carts);
       })
       .catch(err => {
         console.log(err);
       });
   }
-  handleQuentity = () => {};
+
+  handleSubmit = (data, id) => {
+    axios
+      .put(`/monthlycarts/${id}`, data, {
+        headers: {
+          "x-auth": localStorage.getItem("token")
+        }
+      })
+      .then(response => {
+        this.state.carts.forEach(cartId => {
+          if (cartId._id === id) {
+            return (cartId.quantity = data.quantity);
+          } else {
+            return "";
+          }
+        });
+        this.setState(() => ({ carts: this.state.carts }));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
-    //console.log(this.state.monthlycarts);
+    // console.log(this.state);
+    if (this.state.carts[0]) {
+      return (
+        <div>
+          <h4>
+            Shopping Cart-{this.state.carts.length}
+            <span
+              style={{ float: "right", fontSize: "15px", fontWeight: "normal" }}
+            >
+              Quantity
+            </span>
+          </h4>
+          {this.state.cart && (
+            <div>
+              {this.state.carts.map(cart => {
+                return (
+                  <div key={cart._id}>
+                    <hr />
+                    <MonthlyQuantity
+                      id={cart._id}
+                      defaultValue={cart.quantity}
+                      handleSubmit={this.handleSubmit}
+                    />
 
-    if (localStorage.getItem("token")) {
-      if (this.state.monthlycarts[0]) {
-        return (
+                    <h4>
+                      <Link to={`/products/${cart.product._id}`}>
+                        {cart.product.name}
+                      </Link>
+                    </h4>
+                    <img
+                      src={cart.product.imageUrl}
+                      alt="productImg"
+                      width="100"
+                      hight="100"
+                    />
+                    <p>&#x20B9; {cart.product.price}</p>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a
+                      // eslint-disable-next-line no-script-url
+                      href="javascript:void(0)"
+                      target="_self"
+                      rel="noopener noreferrer"
+                      style={{
+                        textDecoration: "underline",
+                        color: "red"
+                      }}
+                      onClick={() => {
+                        axios
+                          .delete(`/monthlycarts/${cart._id}`, {
+                            headers: {
+                              "x-auth": localStorage.getItem("token")
+                            }
+                          })
+                          .then(response => {
+                            let updateCart = this.state.carts.filter(
+                              cartId => cartId._id !== cart._id
+                            );
+                            this.setState(() => ({
+                              carts: updateCart
+                            }));
+                          })
+                          .catch(err => {
+                            console.log(err);
+                          });
+                      }}
+                    >
+                      Delete
+                    </a>
+                    <hr />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <MonthlyTotalCart carts={this.state.carts} />
           <div>
-            {/* {console.log(this.state.carts)} */}
-            {/* {console.log(this.state.carts, 1)} */}
-
-            <h4>Shopping Cart-{this.state.monthlycarts.length}</h4>
-
-            {this.state.monthlycarts && (
-              <div>
-                {this.state.monthlycarts.map(cart => {
-                  return (
-                    <div key={cart._id}>
-                      <hr />
-                      <form type={this.handleSubmit}>
-                        <span
-                          style={{
-                            float: "left",
-                            fontSize: "15px",
-                            fontWeight: "normal"
-                          }}
-                        >
-                          Quantity
-                        </span>
-                        <label>
-                          <input
-                            type="number"
-                            name="quantity"
-                            value={cart.quantity}
-                            min="1"
-                            max="50"
-                            onChange={this.handleQuentity}
-                            style={{ float: "right" }}
-                          />
-                        </label>
-                      </form>
-                      <h4>
-                        <Link to={`/products/${cart.product._id}`}>
-                          {cart.product.name}
-                        </Link>
-                      </h4>
-                      <img
-                        src={cart.product.imageUrl}
-                        alt="productImg"
-                        width="100"
-                        hight="100"
-                      />
-                      <p>price -{cart.product.price}</p>
-                      <button
-                        style={{ textDecoration: "underline", color: "red" }}
-                        onClick={() => {
-                          axios
-                            .delete(`monthlycarts/${cart._id}`, {
-                              headers: {
-                                "x-auth": localStorage.getItem("token")
-                              }
-                            })
-                            .then(response => {
-                              let updatedCart = this.state.monthlycarts.filter(
-                                ucart => ucart._id !== cart._id
-                              );
-
-                              this.setState({ monthlycarts: updatedCart });
-                            })
-                            .catch(err => {
-                              console.log(err);
-                            });
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <hr />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <Link to="/user/select/addresses">
+              <button>Proceed to Buy</button>
+            </Link>
           </div>
-        );
-      } else {
-        return (
-          <div>
-            <h2>no products in the monthlycart to display</h2>
-          </div>
-        );
-      }
+        </div>
+      );
     } else {
-      return <h2> please login to get the monthlycart value</h2>;
+      return (
+        <div>
+          <h4>please add some products to the cart</h4>
+          <Link to="/products">Products</Link>
+        </div>
+      );
     }
   }
 }
 
-export default MonthlyCart;
+export default MonthlyCarts;

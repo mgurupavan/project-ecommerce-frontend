@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import axios from "../../config/config";
 import { Link } from "react-router-dom";
 import TotalCart from "./TotalCart";
-
-class Cart extends Component {
+import Quantity from "./Quantity";
+class Carts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       carts: [],
-      cart: false,
-      quantity: Number,
-      cartId: ""
+      cart: false
     };
   }
   componentDidMount() {
@@ -21,72 +19,37 @@ class Cart extends Component {
         }
       })
       .then(response => {
-        // console.log(response.data.cart);
         this.setState(() => ({ carts: response.data.cart, cart: true }));
       })
       .catch(err => {
         console.log(err);
       });
   }
-  handleQuantity = e => {
-    e.persist();
-    // console.log(e.target.value);
-    const id = e.target.id;
-    console.log(e.target.value);
 
-    const data = {
-      quantity: this.state.quantity
-    };
-    //let id = this.state.cartId;
-    Promise.all([
-      this.setState(() => ({ quantity: e.target.value, cartId: id })),
-      axios.put(`carts/${id}`, data, {
+  handleSubmit = (data, id) => {
+    //console.log("onchange", data);
+    axios
+      .put(`carts/${id}`, data, {
         headers: {
           "x-auth": localStorage.getItem("token")
         }
       })
-    ]).then(response => {
-      console.log(response);
-    });
-
-    // console.log(this.state);
-    // axios
-    //   .put(`carts/${id}`, data, {
-    //     headers: {
-    //       "x-auth": localStorage.getItem("token")
-    //     }
-    //   })
-    //   .then(response => {
-    //     // console.log(response.data);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-  };
-  handleSubmit = e => {
-    e.preventDefault();
-    // const id = this.state.cartId;
-    // const data = {
-    //   quantity: this.state.quantity
-    // };
-
-    // axios
-    //   .put(`carts/${id}`, data, {
-    //     headers: {
-    //       "x-auth": localStorage.getItem("token")
-    //     }
-    //   })
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-    //this.props.handleSubmit(data);
+      .then(response => {
+        this.state.carts.forEach(cartId => {
+          if (cartId._id === id) {
+            return (cartId.quantity = data.quantity);
+          } else {
+            return "";
+          }
+        });
+        this.setState(() => ({ carts: this.state.carts }));
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
-    console.log(this.state.quantity);
     if (localStorage.getItem("token")) {
       if (this.state.carts[0]) {
         return (
@@ -109,21 +72,12 @@ class Cart extends Component {
                   return (
                     <div key={cart._id}>
                       <hr />
-                      <form onSubmit={this.handleSubmit}>
-                        <label>
-                          <input
-                            type="number"
-                            name="quantity"
-                            // value={cart.quantity}
-                            id={cart._id}
-                            defaultValue={cart.quantity}
-                            min="1"
-                            max="50"
-                            onChange={this.handleQuantity}
-                            style={{ float: "right" }}
-                          />
-                        </label>
-                      </form>
+                      <Quantity
+                        id={cart._id}
+                        defaultValue={cart.quantity}
+                        handleSubmit={this.handleSubmit}
+                      />
+
                       <h4>
                         <Link to={`/products/${cart.product._id}`}>
                           {cart.product.name}
@@ -135,7 +89,7 @@ class Cart extends Component {
                         width="100"
                         hight="100"
                       />
-                      <p>price -{cart.product.price}</p>
+                      <p>&#x20B9; {cart.product.price}</p>
                       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                       <a
                         // eslint-disable-next-line no-script-url
@@ -176,17 +130,24 @@ class Cart extends Component {
             )}
             <TotalCart carts={this.state.carts} />
             <div>
-              <button>Proceed to By</button>
+              <Link to="/user/select/addresses">
+                <button>Proceed to Buy</button>
+              </Link>
             </div>
           </div>
         );
       } else {
-        return <h2>please add products to Cart</h2>;
+        return (
+          <div>
+            <h4>please add products to the cart</h4>
+            <Link to="/home">Home</Link>
+          </div>
+        );
       }
     } else {
-      return <h2>please login to show the cart</h2>;
+      return <h2>please login </h2>;
     }
   }
 }
 
-export default Cart;
+export default Carts;

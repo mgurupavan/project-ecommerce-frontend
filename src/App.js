@@ -13,21 +13,44 @@ import NewCategory from "./comoponents/CategoryAdd";
 import Logout from "./comoponents/users/Logout";
 import Home from "./comoponents/Home/Home";
 import Notfound from "./comoponents/Home/NotFound";
-// import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import Carts from "./comoponents/Cart/Carts";
-import MonthlyCart from "./comoponents/MonthlyCart/MonthlyCart";
-
+import MonthlyCarts from "./comoponents/MonthlyCart/MonthlyCart";
+import OrderHistory from "./comoponents/Orders/OrdersHistory";
+// import axios from "./config/config";
 import "./App.css";
 import Addresses from "./comoponents/Addresses/Addresses";
 import AddAddress from "./comoponents/Addresses/AddAddress";
 import AddressEdit from "./comoponents/Addresses/AddressEdit";
+import ReviewAdd from "./comoponents/Reviews/ReviewAdd";
+import Select from "./comoponents/Addresses/Select";
+import Help from "./comoponents/Help/Help";
+// import decode from "jwt-decode";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      role: "",
+      search: "",
+      admin: false,
+      user: false,
+      isAuth: false,
+      msg: ""
+    };
   }
 
+  handleLogin = () => {
+    this.setState(() => ({
+      isAuth: true
+    }));
+  };
+  handleLogout = () => {
+    this.setState(() => ({
+      isAuth: false
+    }));
+  };
+
+  searchHandle = e => {};
   render() {
     return (
       <BrowserRouter>
@@ -37,11 +60,17 @@ class App extends Component {
               <div id="logoWrapper">
                 <img
                   id="logo"
-                  src="http://www.userlogos.org/files/logos/ArkAngel06/Amazon.p"
+                  src="http://www.userlogos.org/files/logos/ArkAngel06/Amazon.pn"
                   alt="logo"
                 />
               </div>
-              <input id="in" type="text" placeholder="Search" />
+              <input
+                id="in"
+                type="text"
+                value={this.state.search}
+                placeholder="Search"
+                onChange={this.searchHandle}
+              />
               <img id="backToSchool" src="/" alt="Offer" />
             </div>
 
@@ -93,6 +122,54 @@ class App extends Component {
                 <div className="section">
                   <Link
                     style={{ color: "white", textDecoration: "none" }}
+                    to="/user/register"
+                  >
+                    Register
+                  </Link>
+                </div>
+                <div className="section">
+                  <Link
+                    style={{ color: "white", textDecoration: "none" }}
+                    to="/user/orders"
+                  >
+                    Orders
+                  </Link>
+                </div>
+                {!this.state.isAuth ? (
+                  <div className="section">
+                    <Link
+                      style={{ color: "white", textDecoration: "none" }}
+                      to="/user/login"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <div className="section">
+                  <Link
+                    style={{ color: "white", textDecoration: "none" }}
+                    to="/user/addresses"
+                  >
+                    Your Addresses
+                  </Link>
+                </div>
+                {this.state.isAuth ? (
+                  <div className="section">
+                    <Link
+                      style={{ color: "white", textDecoration: "none" }}
+                      to="/user/logout"
+                    >
+                      Logout
+                    </Link>
+                  </div>
+                ) : (
+                  <></>
+                )}
+                <div className="section">
+                  <Link
+                    style={{ color: "white", textDecoration: "none" }}
                     to="/user/cart"
                   >
                     Cart
@@ -104,38 +181,6 @@ class App extends Component {
                     to="/user/monthlycart"
                   >
                     MonthlyCart
-                  </Link>
-                </div>
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/register"
-                  >
-                    Register
-                  </Link>
-                </div>
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/login"
-                  >
-                    Login
-                  </Link>
-                </div>
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/addresses"
-                  >
-                    Your Addresses
-                  </Link>
-                </div>
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/logout"
-                  >
-                    Logout
                   </Link>
                 </div>
               </div>
@@ -158,19 +203,61 @@ class App extends Component {
               component={CategoryShow}
               exact={true}
             />
-            <Route path="/categories/edit/:id" component={CategoryEdit} />
+            <Route
+              path="/categories/edit/:id"
+              component={CategoryEdit}
+              exact={true}
+            />
             <Route path="/products" component={Product} exact={true} />
             <Route path="/products/add" component={AddProduct} exact={true} />
             <Route path="/products/:id" component={ProductShow} exact={true} />
-            <Route path="/product/edit/:id" component={ProductEdit} />
-            <Route path="/user/register" component={Register} exact />
-            <Route path="/user/login" component={Login} />
-            <Route path="/user/addresses" component={Addresses} exact />
-            <Route path="/user/addresses/add" component={AddAddress} />
-            <Route path="/user/addresses/edit/:id" component={AddressEdit} />
-            <Route path="/user/logout" component={Logout} />
-            <Route path="/user/cart" component={Carts} />
-            <Route path="/user/monthlycart" component={MonthlyCart} />
+            <Route
+              path="/product/edit/:id"
+              component={ProductEdit}
+              exact={true}
+            />
+            <Route path="/user/register" component={Register} exact={true} />
+            <Route path="/user/orders" component={OrderHistory} exact={true} />
+            <Route
+              path="/user/login"
+              render={props => {
+                return <Login {...props} handleLogin={this.handleLogin} />;
+              }}
+            />
+            <Route path="/user/addresses" component={Addresses} exact={true} />
+            <Route
+              path="/user/addresses/add"
+              component={AddAddress}
+              exact={true}
+            />
+            <Route
+              path="/user/addresses/edit/:id"
+              component={AddressEdit}
+              exact={true}
+            />
+            <Route
+              path="/user/select/addresses"
+              component={Select}
+              exact={true}
+            />
+            <Route
+              path="/user/logout"
+              render={props => {
+                return <Logout {...props} handleLogout={this.handleLogout} />;
+              }}
+            />
+            <Route path="/user/cart" component={Carts} exact={true} />
+            <Route
+              path="/user/monthlycart"
+              component={MonthlyCarts}
+              exact={true}
+            />
+            <Route
+              path="/products/user/reviews/:id"
+              component={ReviewAdd}
+              exact={true}
+            />
+            <Route path="/help" component={Help} exact={true} />
             <Route path="/home" component={Home} exact={true} />
             <Route path="/" component={Home} exact={true} />
             <Route component={Notfound} />
