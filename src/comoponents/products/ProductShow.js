@@ -51,7 +51,6 @@ class ProductShow extends Component {
       .get("/reviews")
       .then(response => {
         this.setState(() => ({ reviews: response.data }));
-        console.log(response.data, "guru");
       })
       .catch(err => {
         console.log(err, "err");

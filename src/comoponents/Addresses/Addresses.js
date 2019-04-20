@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "../../config/config";
@@ -48,7 +50,7 @@ class Addresses extends Component {
                   <Link to={`addresses/edit/${address._id}`}>Edit</Link>
                   <br />
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-
+                  {/* // eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                   <a
                     // eslint-disable-next-line no-script-url
                     href="javascript:void(0)"
