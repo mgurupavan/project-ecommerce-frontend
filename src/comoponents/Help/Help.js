@@ -94,7 +94,7 @@ function Help(props) {
           <Typography className={classes.heading}>For more queries</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography>please contact us **********</Typography>
+          <Typography>please contact us ***********</Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
