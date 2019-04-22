@@ -2,15 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from "../../config/config";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+import ProductFilter from "./ProductFilter";
 
 const styles = theme => ({
   appBar: {
@@ -29,49 +25,26 @@ const styles = theme => ({
   },
   heroButtons: {
     marginTop: theme.spacing.unit * 4
-  },
-  layout: {
-    width: "auto",
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      width: 1100,
-      marginLeft: "auto",
-      marginRight: "auto"
-    }
-  },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 8}px 0`
-  },
-  card: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column"
-  },
-  cardMedia: {
-    paddingTop: "56.25%" // 16:9
-  },
-  cardContent: {
-    flexGrow: 1
   }
 });
 class Product extends Component {
   constructor() {
     super();
     this.state = {
-      products: []
+      products: [],
+      onLoad: false
     };
   }
   componentDidMount() {
     axios.get("/products").then(response => {
       const products = response.data;
-      this.setState(() => ({ products: products }));
+      this.setState(() => ({ products: products, onLoad: true }));
     });
   }
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className="products">
         <Button
           variant="outlined"
           color="secondary"
@@ -103,7 +76,11 @@ class Product extends Component {
               </Typography>
             </div>
           </div>
-          <div className={classNames(classes.layout, classes.cardGrid)}>
+          {this.state.onLoad && (
+            <ProductFilter products={this.state.products} />
+          )}
+
+          {/* <div className={classNames(classes.layout, classes.cardGrid)}>
             <Grid container spacing={8}>
               {this.state.products.map(product => (
                 <Grid item key={product._id} md={3}>
@@ -134,7 +111,7 @@ class Product extends Component {
                 </Grid>
               ))}
             </Grid>
-          </div>
+          </div> */}
         </main>
       </div>
     );
