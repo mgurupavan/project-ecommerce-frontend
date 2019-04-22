@@ -29,7 +29,7 @@ const styles = theme => ({
     flexDirection: "column"
   },
   cardMedia: {
-    paddingTop: "56.25%" // 16:9
+    paddingTop: "56.25%"
   },
   cardContent: {
     flexGrow: 1
@@ -51,7 +51,6 @@ class ListingProducts extends React.Component {
     }
   }
   render() {
-    // console.log(this.state.filteredValue, "guru");
     const { classes } = this.props;
     let products = [];
     if (this.state.filteredValue !== 0) {
@@ -64,39 +63,37 @@ class ListingProducts extends React.Component {
       products = this.state.products;
     }
     return (
-      <div>
-        <div className={classNames(classes.layout, classes.cardGrid)}>
-          <Grid container spacing={8}>
-            {products.map(product => (
-              <Grid item key={product._id} md={3}>
-                <Card className={classes.card}>
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image={product.imageUrl}
-                    title="Image title"
-                  />
-                  <CardContent className={classes.cardContent}>
-                    <Typography variant="title" component="h6">
-                      <Link
-                        to={`/products/${product._id}`}
-                        style={{
-                          textDecoration: "none",
-                          color: "black"
-                        }}
-                      >
-                        {product.name}
-                      </Link>
-                    </Typography>
-                    <Typography style={{ color: "green" }}>
-                      {product.category.name}
-                    </Typography>
-                    <Typography>&#x20B9; {product.price}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </div>
+      <div className={classNames(classes.layout, classes.cardGrid)}>
+        <Grid container spacing={8}>
+          {products.map(product => (
+            <Grid item key={product._id} md={3}>
+              <Card className={classes.card}>
+                <CardMedia
+                  className={classes.cardMedia}
+                  image={product.imageUrl}
+                  title="Image title"
+                />
+                <CardContent className={classes.cardContent}>
+                  <Typography variant="title" component="h6">
+                    <Link
+                      to={`/products/${product._id}`}
+                      style={{
+                        textDecoration: "none",
+                        color: "black"
+                      }}
+                    >
+                      {product.name}
+                    </Link>
+                  </Typography>
+                  <Typography style={{ color: "green" }}>
+                    {product.category.name}
+                  </Typography>
+                  <Typography>&#x20B9; {product.price}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </div>
     );
   }
