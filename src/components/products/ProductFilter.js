@@ -22,8 +22,8 @@ class ProductFilter extends React.Component {
           <input type="radio" name="price" value="2000" /> lessthan 2000 <br />
         </form>
         <ListingProducts
-          products={this.props.products}
           filteredValue={this.state.filteredValue}
+          search={this.props.search}
         />
       </div>
     );

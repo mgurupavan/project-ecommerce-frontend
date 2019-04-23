@@ -69,3 +69,18 @@
 .products {
   float: right;
 }
+
+#localSearch {
+  /* vertical-align: top; */
+  margin-top: 5px;
+  /* margin-left: 1rem; */
+
+  border-radius: 5px;
+  height: 30px;
+  width: 50px;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}

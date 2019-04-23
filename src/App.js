@@ -34,8 +34,7 @@ class App extends Component {
       search: "",
       admin: false,
       user: false,
-      isAuth: false,
-      msg: ""
+      isAuth: false
     };
   }
 
@@ -50,8 +49,12 @@ class App extends Component {
     }));
   };
 
-  searchHandle = e => {};
+  searchHandle = e => {
+    const searchValue = e.target.value;
+    this.setState(() => ({ search: searchValue }));
+  };
   render() {
+    console.log(this.state.search);
     return (
       <BrowserRouter>
         <div>
@@ -208,7 +211,14 @@ class App extends Component {
               component={CategoryEdit}
               exact={true}
             />
-            <Route path="/products" component={Product} exact={true} />
+
+            <Route
+              path="/products"
+              render={props => {
+                return <Product {...props} search={this.state.search} />;
+              }}
+              exact={true}
+            />
             <Route path="/products/add" component={AddProduct} exact={true} />
             <Route path="/products/:id" component={ProductShow} exact={true} />
             <Route

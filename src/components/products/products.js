@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from "../../config/config";
 import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Button from "@material-ui/core/Button";
@@ -32,15 +31,14 @@ class Product extends Component {
     super();
     this.state = {
       products: [],
-      onLoad: false
+      onLoad: false,
+      search: ""
     };
   }
-  componentDidMount() {
-    axios.get("/products").then(response => {
-      const products = response.data;
-      this.setState(() => ({ products: products, onLoad: true }));
-    });
-  }
+  searchHandle = e => {
+    const search = e.target.value;
+    this.setState(() => ({ search }));
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -61,6 +59,17 @@ class Product extends Component {
             Add Product
           </Link>
         </Button>
+        <center>
+          <input
+            //id="localSearch"
+            size="78"
+            type="text"
+            value={this.state.search}
+            placeholder="Search"
+            onChange={this.searchHandle}
+          />
+        </center>
+
         <CssBaseline />
         <main>
           <div className={classes.heroUnit}>
@@ -71,14 +80,10 @@ class Product extends Component {
                 align="center"
                 color="textPrimary"
                 gutterBottom
-              >
-                <img src="#" alt="g" />
-              </Typography>
+              />
             </div>
           </div>
-          {this.state.onLoad && (
-            <ProductFilter products={this.state.products} />
-          )}
+          <ProductFilter search={this.state.search} />
 
           {/* <div className={classNames(classes.layout, classes.cardGrid)}>
             <Grid container spacing={8}>
