@@ -1,29 +1,38 @@
 import React, { Component } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-import Categories from "./components/categories";
-import CategoryShow from "./components/CategoryShow";
-import CategoryEdit from "./components/CategoryEdit";
+
+import Categories from "./components/Categories/categories";
+import CategoryShow from "./components/Categories/CategoryShow";
+import CategoryEdit from "./components/Categories/CategoryEdit";
+import NewCategory from "./components/Categories/CategoryAdd";
+
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
+import Logout from "./components/users/Logout";
+
 import Product from "./components/products/products";
 import AddProduct from "./components/products/ProductAdd";
 import ProductEdit from "./components/products/ProductEdit";
 import ProductShow from "./components/products/ProductShow";
-import NewCategory from "./components/CategoryAdd";
-import Logout from "./components/users/Logout";
-import Home from "./components/Home/Home";
-import Notfound from "./components/Home/NotFound";
+
 import Carts from "./components/Cart/Carts";
 import MonthlyCarts from "./components/MonthlyCart/MonthlyCart";
+
 import OrderHistory from "./components/Orders/OrdersHistory";
 // import axios from "./config/config";
-import "./App.css";
+
 import Addresses from "./components/Addresses/Addresses";
 import AddAddress from "./components/Addresses/AddAddress";
 import AddressEdit from "./components/Addresses/AddressEdit";
 import ReviewAdd from "./components/Reviews/ReviewAdd";
+
 import Select from "./components/Addresses/Select";
 import Help from "./components/Help/Help";
+
+import Home from "./components/Home/Home";
+import Notfound from "./components/Home/NotFound";
+
+import "./App.css";
 // import decode from "jwt-decode";
 
 class App extends Component {

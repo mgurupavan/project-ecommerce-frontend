@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from "../config/config";
+import axios from "../../config/config";
 class Categories extends Component {
   constructor(props) {
     super(props);
