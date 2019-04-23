@@ -11,6 +11,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
+import ReactStars from "react-stars";
 // import ReviewAdd from "./ReviewAdd";
 const styles = theme => ({
   main: {
@@ -55,7 +56,7 @@ class ReviewForm extends Component {
       body: "",
       titleError: "",
       tError: false,
-      rating: "",
+      rating: 0,
       ratingError: "",
       rError: false
     };
@@ -63,6 +64,9 @@ class ReviewForm extends Component {
   handleChange = e => {
     e.persist();
     this.setState(() => ({ [e.target.name]: e.target.value }));
+  };
+  ratingChanged = newRating => {
+    this.setState(() => ({ rating: newRating }));
   };
   handleSubmit = e => {
     e.preventDefault();
@@ -80,7 +84,7 @@ class ReviewForm extends Component {
         tError: true,
         bodyError: "Write review > 16",
         bError: true,
-        ratingError: "minmum 1 is necessary",
+        ratingError: "minmum 1 is mandatory",
         rError: true
       }));
     } else if (!this.state.rating) {
@@ -89,7 +93,7 @@ class ReviewForm extends Component {
         tError: false,
         bodyError: "",
         bError: false,
-        ratingError: "minmum 1 is necessary",
+        ratingError: "minmum 1 is mandatory",
         rError: true
       }));
     } else {
@@ -139,14 +143,24 @@ class ReviewForm extends Component {
                 <span style={{ color: "red" }}>{this.state.bodyError}</span>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="rating">Your Rating</InputLabel>
-                  <Input
-                    type="number"
-                    name="rating"
-                    onChange={this.handleChange}
-                    required
-                    inputProps={{ min: "1", max: "5" }}
-                    placeholder="give Your Rating"
-                    error={this.state.rError}
+
+                  {/* <Input
+										type="number"
+										name="rating"
+										onChange={this.handleChange}
+										required
+										inputProps={{ min: "1", max: "5" }}
+										placeholder="give Your Rating"
+										error={this.state.rError}
+									/> */}
+                  <br />
+                  <br />
+                  <ReactStars
+                    count={5}
+                    value={this.state.rating}
+                    onChange={this.ratingChanged}
+                    size={39}
+                    color2={"#ffd700"}
                   />
                   <span style={{ color: "red" }}>{this.state.ratingError}</span>
                 </FormControl>

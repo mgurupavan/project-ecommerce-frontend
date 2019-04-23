@@ -31,9 +31,11 @@ class Select extends Component {
     this.state.carts.forEach(cart => {
       data.lineItems.push({
         product: cart.product._id,
-        quantity: cart.quantity
+        quantity: cart.quantity,
+        price: cart.product.price
       });
     });
+    // console.log(data);
     axios
       .post("/orders", data, {
         headers: {
@@ -50,6 +52,7 @@ class Select extends Component {
   render() {
     return (
       <div>
+        <Addresses />
         <label>
           Select Address: <br />
           <select name="addresses" id="">
@@ -57,7 +60,6 @@ class Select extends Component {
             <option value="2">2</option>
           </select>
         </label>
-        <Addresses />
 
         <br />
         <button onClick={this.placeOrder}>Place the Order</button>
