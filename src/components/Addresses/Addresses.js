@@ -83,120 +83,124 @@ class Addresses extends Component {
   render() {
     const { classes } = this.props;
     // const bull = <span className={classes.bullet}>•</span>;
-    if (this.state.addresses.length >= 0) {
-      return (
-        <div>
-          <Button
-            size="small"
-            color="secondary"
-            style={{ marginLeft: "1080px", marginTop: "5px" }}
-          >
-            <Link
-              to="/user/addresses/add"
-              style={{
-                float: "right",
-                color: "#F50057",
-                textDecoration: "none"
-              }}
+    if (localStorage.getItem("token")) {
+      if (this.state.addresses.length >= 0) {
+        return (
+          <div>
+            <Button
+              size="small"
+              color="secondary"
+              style={{ marginLeft: "1080px", marginTop: "5px" }}
             >
-              Add Address
-            </Link>
-          </Button>
+              <Link
+                to="/user/addresses/add"
+                style={{
+                  float: "right",
+                  color: "#F50057",
+                  textDecoration: "none"
+                }}
+              >
+                Add Address
+              </Link>
+            </Button>
 
-          <CssBaseline />
-          <main>
-            <center>
-              <Typography variant="h5">Your Addresses</Typography>
-            </center>
-            <div className={classNames(classes.layout, classes.cardGrid)}>
-              <Grid container spacing={40}>
-                {this.state.addresses.map((address, i) => (
-                  <Grid item key={address._id} sm={6} md={4} lg={3}>
-                    <Card className={classes.card}>
-                      <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h4">
-                          #{i + 1}. {address.fullname}
-                        </Typography>
-                        <Typography>
-                          {address.street} <br />
-                          {address.landmark} <br />
-                          {address.city} <br />
-                          {address.postalCode} <br />
-                          A.P <br />
-                          India <br />
-                          {address.mobile}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" color="secondary">
-                          <Link
-                            to={`addresses/edit/${address._id}`}
-                            style={{
-                              color: "#F50057",
-                              textDecoration: "none"
+            <CssBaseline />
+            <main>
+              <center>
+                <Typography variant="h5">Your Addresses</Typography>
+              </center>
+              <div className={classNames(classes.layout, classes.cardGrid)}>
+                <Grid container spacing={40}>
+                  {this.state.addresses.map((address, i) => (
+                    <Grid item key={address._id} sm={6} md={4} lg={3}>
+                      <Card className={classes.card}>
+                        <CardContent className={classes.cardContent}>
+                          <Typography gutterBottom variant="h5" component="h4">
+                            #{i + 1}. {address.fullname}
+                          </Typography>
+                          <Typography>
+                            {address.street} <br />
+                            {address.landmark} <br />
+                            {address.city} <br />
+                            {address.postalCode} <br />
+                            A.P <br />
+                            India <br />
+                            {address.mobile}
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Button size="small" color="secondary">
+                            <Link
+                              to={`addresses/edit/${address._id}`}
+                              style={{
+                                color: "#F50057",
+                                textDecoration: "none"
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </Button>
+                          <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => {
+                              axios
+                                .delete(`addresses/${address._id}`, {
+                                  headers: {
+                                    "x-auth": localStorage.getItem("token")
+                                  }
+                                })
+                                .then(response => {
+                                  let updateAddress = this.state.addresses.filter(
+                                    addressId => addressId._id !== address._id
+                                  );
+                                  this.setState(() => ({
+                                    addresses: updateAddress
+                                  }));
+                                })
+                                .catch(err => {
+                                  console.log(err);
+                                });
                             }}
                           >
-                            Edit
-                          </Link>
-                        </Button>
-                        <Button
-                          size="small"
-                          color="secondary"
-                          onClick={() => {
-                            axios
-                              .delete(`addresses/${address._id}`, {
-                                headers: {
-                                  "x-auth": localStorage.getItem("token")
-                                }
-                              })
-                              .then(response => {
-                                let updateAddress = this.state.addresses.filter(
-                                  addressId => addressId._id !== address._id
-                                );
-                                this.setState(() => ({
-                                  addresses: updateAddress
-                                }));
-                              })
-                              .catch(err => {
-                                console.log(err);
-                              });
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </div>
-          </main>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Typography>
-            There is no addresses in this user please add address
-          </Typography>
-          <Button
-            size="small"
-            color="secondary"
-            style={{ marginLeft: "1080px", marginTop: "5px" }}
-          >
-            <Link
-              to="/user/addresses/add"
-              style={{
-                float: "right",
-                color: "#F50057",
-                textDecoration: "none"
-              }}
+                            Delete
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </div>
+            </main>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <Typography>
+              There is no addresses in this user please add address
+            </Typography>
+            <Button
+              size="small"
+              color="secondary"
+              style={{ marginLeft: "1080px", marginTop: "5px" }}
             >
-              Add Address
-            </Link>
-          </Button>
-        </div>
-      );
+              <Link
+                to="/user/addresses/add"
+                style={{
+                  float: "right",
+                  color: "#F50057",
+                  textDecoration: "none"
+                }}
+              >
+                Add Address
+              </Link>
+            </Button>
+          </div>
+        );
+      }
+    } else {
+      return <h2> please login </h2>;
     }
   }
 }
