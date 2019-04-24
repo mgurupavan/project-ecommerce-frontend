@@ -12,18 +12,16 @@ class ProductFilter extends React.Component {
     let value = parseInt(e.target.value, 10);
     this.setState(() => ({ filteredValue: value }));
   };
-  handleReset = e => {
-    e.preventDefault();
-    this.setState(() => ({ filteredValue: 0 }));
-  };
+
   render() {
     return (
       <div>
         <form onChange={this.handlePrice}>
           price value <br />
+          <input type="radio" name="price" value="0" selected /> All Product{" "}
+          <br />
           <input type="radio" name="price" value="500" /> lessthan 500 <br />
           <input type="radio" name="price" value="1000" /> lessthan 1000 <br />
-          <button onClick={this.handleReset}>reset</button>
         </form>
         <ListingProducts
           filteredValue={this.state.filteredValue}

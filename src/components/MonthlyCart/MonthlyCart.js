@@ -53,7 +53,6 @@ class MonthlyCarts extends Component {
   };
 
   render() {
-    // console.log(this.state);
     if (localStorage.getItem("token")) {
       if (this.state.carts[0]) {
         return (
