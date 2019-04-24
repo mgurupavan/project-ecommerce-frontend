@@ -77,9 +77,14 @@ class ListingProducts extends React.Component {
     if (this.state.search) {
       var searchedProducts = [];
       let search = this.state.search.toLowerCase();
-      products.forEach(product => {
+      this.state.products.forEach(product => {
+        let productCategory = product.category.name.toLowerCase();
+        //console.log(productCategory);
         let productName = product.name.toLowerCase();
-        if (productName.search(search) >= 0) {
+        if (
+          productName.search(search) >= 0 ||
+          productCategory.search(search) >= 0
+        ) {
           searchedProducts.push(product);
         }
       });

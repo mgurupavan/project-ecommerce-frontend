@@ -38,13 +38,14 @@ class ProductShow extends Component {
       products: {},
       reviews: [],
       loadedReview: false,
-      isload: false
+      isload: false,
+      statusText: ""
     };
   }
   componentDidMount() {
     const id = this.props.match.params.id;
     axios.get(`/products/${id}`).then(response => {
-      const products = response.data;
+      let products = response.data;
       this.setState(() => ({ products: products }));
     });
     axios
@@ -85,7 +86,12 @@ class ProductShow extends Component {
           "x-auth": localStorage.getItem("token")
         }
       })
-      .then(response => {})
+      .then(response => {
+        let statusText = response.data.statusText;
+        this.setState(() => ({ statusText }));
+        window.alert(this.state.statusText);
+        //console.log(response.data.statusText);
+      })
       .catch(err => {
         console.log(err);
       });
@@ -95,10 +101,10 @@ class ProductShow extends Component {
       product: this.props.match.params.id,
       quantity: 1
     };
-    const conform = window.confirm(
-      "Are you sure this items repeated every month!"
+    const confirm = window.confirm(
+      "Are you sure to repeated this product for every month!"
     );
-    if (conform) {
+    if (confirm) {
       axios
         .post(`/monthlycarts`, data, {
           headers: {
@@ -115,8 +121,8 @@ class ProductShow extends Component {
   };
 
   render() {
-    console.log(this.state.products);
     const { classes } = this.props;
+    console.log(this.state.statusText);
     return (
       <div>
         <div className={classes.root}>

@@ -30,8 +30,6 @@ class Product extends Component {
   constructor() {
     super();
     this.state = {
-      products: [],
-      onLoad: false,
       search: ""
     };
   }

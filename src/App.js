@@ -42,20 +42,15 @@ class App extends Component {
       role: "",
       search: "",
       admin: false,
-      user: false,
-      isAuth: false
+      user: false
     };
   }
 
   handleLogin = () => {
-    this.setState(() => ({
-      isAuth: true
-    }));
+    this.setState(() => ({}));
   };
   handleLogout = () => {
-    this.setState(() => ({
-      isAuth: false
-    }));
+    this.setState(() => ({}));
   };
 
   searchHandle = e => {
@@ -63,7 +58,14 @@ class App extends Component {
     this.setState(() => ({ search: searchValue }));
   };
   render() {
-    console.log(this.state.search);
+    // console.log(this.state.search);
+    let login = false;
+    let logout = false;
+    if (localStorage.getItem("token")) {
+      login = true;
+    } else {
+      logout = true;
+    }
     return (
       <BrowserRouter>
         <div>
@@ -131,23 +133,7 @@ class App extends Component {
                 </div>
               </div>
               <div id="accountStuff">
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/register"
-                  >
-                    Register
-                  </Link>
-                </div>
-                <div className="section">
-                  <Link
-                    style={{ color: "white", textDecoration: "none" }}
-                    to="/user/orders"
-                  >
-                    Orders
-                  </Link>
-                </div>
-                {!this.state.isAuth ? (
+                {logout && (
                   <div className="section">
                     <Link
                       style={{ color: "white", textDecoration: "none" }}
@@ -156,9 +142,27 @@ class App extends Component {
                       Login
                     </Link>
                   </div>
-                ) : (
-                  <></>
                 )}
+                {logout && (
+                  <div className="section">
+                    <Link
+                      style={{ color: "white", textDecoration: "none" }}
+                      to="/user/register"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                )}
+
+                <div className="section">
+                  <Link
+                    style={{ color: "white", textDecoration: "none" }}
+                    to="/user/orders"
+                  >
+                    Orders
+                  </Link>
+                </div>
+
                 <div className="section">
                   <Link
                     style={{ color: "white", textDecoration: "none" }}
@@ -167,18 +171,7 @@ class App extends Component {
                     Your Addresses
                   </Link>
                 </div>
-                {this.state.isAuth ? (
-                  <div className="section">
-                    <Link
-                      style={{ color: "white", textDecoration: "none" }}
-                      to="/user/logout"
-                    >
-                      Logout
-                    </Link>
-                  </div>
-                ) : (
-                  <></>
-                )}
+
                 <div className="section">
                   <Link
                     style={{ color: "white", textDecoration: "none" }}
@@ -195,6 +188,16 @@ class App extends Component {
                     MonthlyCart
                   </Link>
                 </div>
+                {login && (
+                  <div className="section">
+                    <Link
+                      style={{ color: "white", textDecoration: "none" }}
+                      to="/user/logout"
+                    >
+                      Logout
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
